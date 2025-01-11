@@ -1,5 +1,8 @@
 Rails.application.configure do
+  # Clear any host restrictions (for development purposes)
   config.hosts.clear
+
+  # Load IP whitelists from YAML files (if they exist)
   path = Rails.root.join("whitelist.yml")
   default_whitelist_path = Rails.root.join("default_whitelist.yml")
   whitelisted_ips = []
@@ -12,13 +15,12 @@ Rails.application.configure do
     whitelisted_ips = whitelisted_ips.concat(YAML.load_file(default_whitelist_path))
   end
 
-  config.web_console.permissions = whitelisted_ips
-  config.web_console.whiny_requests = false
-
-  config.web_console.whitelisted_ips = '0.0.0.0/0.0.0.0'
+  # Allow IPs for BetterErrors (use this instead of web_console)
   BetterErrors::Middleware.allow_ip! '0.0.0.0/0.0.0.0'
 
+  # Set default URL options for Action Mailer in development
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded on
